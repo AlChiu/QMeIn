@@ -21,6 +21,21 @@ var MerchantSchema = mongoose.Schema({
 	},
 	businessname: {
 		type: String
+	},
+	businessAddress: {
+		type: String
+	},
+	businessCity: {
+		type: String
+	},
+	businessState: {
+		type: String
+	},
+	businessZip: {
+		type: Number
+	},
+	businessUniqueID: {
+		type: String
 	}
 });
 

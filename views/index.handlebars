@@ -1,50 +1,69 @@
-<h2>Welcome to QmeIn, <strong>{{ user.firstname }}</strong> <strong>{{ user.lastname }}</strong>!</h2>  
+    <div class="container">
 
-{{#unless user.businessname}}
-	<h3>There are {{count}} in queue right now.</h3>
-	<h3>It will take you about {{waitTime}} minutes to get to the window if you 'Q' in now.</h3>
+        <!-- Heading Row -->
+        <div class="row">
+            <div class="col-md-8">
+                <img class="img-responsive img-rounded" src="/images/logo.png">
+            </div>
+            <!-- /.col-md-8 -->
+            <div class="col-md-4">
+                <h1>QMeIn</h1>
+                <p>Something Something Description!</p>
+                <a class="btn btn-primary btn-lg" href="#">About page?</a>
+            </div>
+            <!-- /.col-md-4 -->
+        </div>
+        <!-- /.row -->
 
-	<!-- QueMeIn button -->
-	<form method="post" action="/users/addtoqueue">
-	  <div class="form-group">
-		<input type="hidden" class="form-control" name="firstname" value={{user.firstname}}>
-		<input type="hidden" class="form-control" name="lastname" value={{user.lastname}}>
-		<input type="hidden" class="form-control" name="email" value={{user.username}}>
-		<input type="hidden" class="form-control" name="phonenumber" value={{user.phonenumber}}>
-	  </div>
-	  <button type="submit" class="btn btn-default">QmeIn</button>
-	</form>
-{{/unless}}
+        <hr>
 
-{{#if user.businessname}}
-	<h3>Here is the current Queue: </h3>  
-	<table>
-	  <tr>
-		<th>Position</th>
-		<th>Last Name</th>
-		<th>First Name</th>
-		<th>Email</th>
-		<th>Phone Number</th>
-		<th>Time</th>
-		<th>Transaction Completed</th>
-	  </tr>
-		{{#each queuedata }}
-		<tr>
-			<td>{{inc @index}}</td>
-			<td>{{lastname}}</td>
-			<td>{{firstname}}</td>
-			<td>{{email}}</td>
-			<td>{{phonenumber}}</td>
-			<td>{{date}}</td>
-			<td><form action="/merchant/completeTransaction" method="post">
-			<button name="id" type="submit" class="btn btn-default" value={{_id}}>
-			Complete</button>
-			</form></td>
-		</tr>
-		{{/each}}
-	</table>
-{{/if}}
+        <!-- Call to Action Well -->
+        <div class="row">
+            <div class="col-lg-12">
+                <div class="well text-center">
+                    This is a well that is a great spot for a business tagline or phone number for easy access!
+                </div>
+            </div>
+            <!-- /.col-lg-12 -->
+        </div>
+        <!-- /.row -->
 
- <p>{{foo}}</p>
-
-
+        <!-- Content Row -->
+        <div class="row">
+            <!-- Default when no user is logged in -->
+            {{#unless user.username}}
+            <div class="col-md-4">
+                <h2>Login</h2>
+                <p>If you are already an active user, just click the button below to login</p>
+                <a class="btn btn-primary btn-lg" href="login">Login</a>
+            </div>
+            <!-- /.col-md-4 -->
+            <div class="col-md-4">
+                <h2>New User</h2>
+                <p>New to QMeIn? Want to start lining up without lining up? Register as a new user! You are only a click away!</p>
+                <a class="btn btn-primary btn-lg" href="registerUser">New User</a>
+            </div>
+            <!-- /.col-md-4 -->
+            <div class="col-md-4">
+                <h2>New Merchant</h2>
+                <p>Want to start improving your business? Want to start relieving headaches for everyone? Register as a new merchant! Start working with us today!</p>
+                <a class="btn btn-primary btn-lg" href="registerMerchant">New Merchant</a>
+            </div>
+            {{/unless}}
+            <!-- If a normal user logs in -->
+            {{#unless user.queued}}
+            <div class="col-lg-12">
+                <h2>Start Queuing Up!</h2>
+                <p>What are you waiting for? Check out the merchant list and start queuing up.</p>
+                <a class="btn btn-primary btn-lg" href="userlanding">Merchant List</a>
+            </div>
+            {{/unless}}
+            {{#if user.businessname}}
+            <div class="col-lg-12">
+                <h2>Monitor Your Queue!</h2>
+                <p>Start using the queue to speed up customer transactions and optimize your business!</p>
+                <a class="btn btn-primary btn-lg" href="merchantlanding">Current Queue</a>
+            </div>
+            {{/if}}
+        </div>
+    </div>

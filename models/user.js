@@ -18,6 +18,14 @@ var UserSchema = mongoose.Schema({
 	},
 	phonenumber: {
 		type: Number
+	},
+	queued: {
+		type: Boolean,
+		default: false
+	},
+	businessQueued: {
+		type: String,
+		default: null
 	}
 });
 

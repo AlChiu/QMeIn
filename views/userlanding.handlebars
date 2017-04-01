@@ -1,0 +1,45 @@
+<h2>Welcome to QmeIn, <strong>{{ user.firstname }}</strong> <strong>{{ user.lastname }}</strong>!</h2>  
+
+{{#unless user.businessname}}
+<div class="container">
+	<div class="row">
+		<div class="panel panel-default">
+			<div class="panel-heading">
+				<h4>Merchant Listing</h4>
+			</div>
+			<table class="table table-fixed">
+				<thead class="thead-inverse">
+					<tr>
+						<th class="col-xs-2">Name</th>
+						<th class="col-xs-8">Address</th>
+						<th class="col-xs-2">Queue</th>
+					</tr>
+				</thead>
+				{{#each merchdata}}
+				<tbody>
+					<tr>
+						<td class="col-xs-2">{{businessname}}</td>
+						<td class="col-xs-8">{{businessAddress}}<br>{{businessCity}}, {{businessState}} {{businessZip}}</td>
+						<td class="col-xs-2" style="text-align: center">
+							<!-- QueMeIn button -->
+							<form method="post" action="/users/addtoqueue">
+	 							<div class="form-group">
+									<input type="hidden" class="form-control" name="firstname" value={{user.firstname}}>
+									<input type="hidden" class="form-control" name="lastname" value={{user.lastname}}>
+									<input type="hidden" class="form-control" name="email" value={{user.username}}>
+									<input type="hidden" class="form-control" name="phonenumber" value={{user.phonenumber}}>
+									<input type="hidden" class="form-control" name="businessQueued" value={{businessname}}>
+									<input type="hidden" class="form-control" name="businessEmail" value={{username}}>
+									<input type="hidden" class="form-control" name="queued" value="true">
+	  							</div>
+	  							<button type="submit" class="btn btn-lg btn-info">QmeIn</button>
+							</form>
+						</td>
+					</tr>
+				</tbody>
+				{{/each}}
+			</table>
+		</div>
+	</div>
+</div>
+{{/unless}}
