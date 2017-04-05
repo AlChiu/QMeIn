@@ -51,18 +51,36 @@
             </div>
             {{/unless}}
             <!-- If a normal user logs in -->
-            {{#unless user.queued}}
-            <div class="col-lg-12">
-                <h2>Start Queuing Up!</h2>
-                <p>What are you waiting for? Check out the merchant list and start queuing up.</p>
-                <a class="btn btn-primary btn-lg" href="userlanding">Merchant List</a>
-            </div>
-            {{/unless}}
+            {{#if user.username}}
+                {{#unless user.businessname}}
+                    {{#if user.queued}}
+                        <div class="col-lg-12">
+                            <h2>You are in a queue!</h2>
+                            <p>Need to check your status in the queue? Click below.</p>
+                            <form method="post" action="/queuestatus">
+                                <input type="hidden" name="queue" value={{user.businessQueued}}>
+                                <input type="hidden" name="user" value={{user.username}}>
+                                <input type="hidden" name="id" value={{user._id}}>
+                                <button type="submit" class="btn btn-primary btn-lg">Check Status</button>
+                            </form>
+                        </div>
+                    {{else}}
+                        <div class="col-lg-12">
+                            <h2>Start Queuing Up!</h2>
+                            <p>What are you waiting for? Check out the merchant list and start queuing up.</p>
+                            <a class="btn btn-primary btn-lg" href="userlanding">Merchant List</a>
+                        </div>
+                    {{/if}}
+                {{/unless}}
+            {{/if}}
             {{#if user.businessname}}
             <div class="col-lg-12">
                 <h2>Monitor Your Queue!</h2>
                 <p>Start using the queue to speed up customer transactions and optimize your business!</p>
-                <a class="btn btn-primary btn-lg" href="merchantlanding">Current Queue</a>
+                <form method="post" action="/merchantlanding">
+                    <input type="hidden" name="businessUID" value={{user.businessUniqueID}}>
+                    <button type="submit" class="btn btn-primary btn-lg">Current Queue</button>
+                </form>
             </div>
             {{/if}}
         </div>

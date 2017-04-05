@@ -1,6 +1,8 @@
 var express = require('express');
 var router = express.Router();
 var passport = require('passport');
+var mongoose = require('mongoose');
+var ObjectId = require('mongodb').ObjectID;
 var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('../models/user');
@@ -36,37 +38,26 @@ router.get('/userlanding', ensureAuthenticated, function(req, res){
 });
 
 // Get the merchant landing page
-router.get('/merchantlanding', ensureAuthenticated, function(req, res){
-        //Need to access the queue of the businessname
-        if(user.businessname){
-            var businessQueue = user.businessname+user.username+'s';
-            businessQueue = businessQueue.replace(/\s+/g, '');
-
-            businessQueue.find({}, function(err, doc){
-                if(err){
-                    res.send(500);
-                    return;
-                }
-                res.render('merchantlanding', {queuedata: doc});
-            });
-        }
-        else res.redirect('/');
+router.post('/merchantlanding', ensureAuthenticated, function(req, res){
+    mongoose.connection.db.collection(req.body.businessUID).find().toArray(function(err, doc){
+        if(err) throw err;
+        else res.render('merchantlanding', {queuedata: doc});
+    });
 });
 
 // QueueStatus
-router.get('/queuestatus', ensureAuthenticated, function(req, res){
-    User.findOne({username: email}, function(err, user, merch, queue, count){
+router.post('/queuestatus', ensureAuthenticated, function(req, res){
+    Merchant.findOne({businessUniqueID: req.body.queue},function(err, merch, count){
         if(err) throw err;
-        Merchant.findOne({businessUniqueID: businessQueued}, function(err, merch, queue, count){
+        mongoose.connection.db.collection(req.body.queue).count(function(err,count, position){
             if(err) throw err;
-            businessQueued.find({}, function(err, queue, count){
+            mongoose.connection.db.collection(req.body.queue).find({_id: {$lte: ObjectId(req.body.id)}}).count(function(err, position){
                 if(err) throw err;
-                businessQueued.count(function(err, count){
-                    var waitTime = (c-1) * avgTime;
-                    res.render('queuestatus', {userdata: user, merchdata: merch, queuedata: queue, count: count, waitTime: waitTime});
-                });
+                position += 1;
+                var waitTime = (position - 1) * avgTime;
+                res.render('queuestatus', {merchdata: merch, count: count, position: position, waitTime: waitTime});
             });
-        });  
+        });
     });
 });
 

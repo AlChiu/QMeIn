@@ -30,18 +30,13 @@
 /****************************************************/
 /****************************************************/
 
-
-
-
-
 /*Load Module and Initialize App 				    */                                   
 /****************************************************/
 var express = require('express');
-var app = express();
-var http = require('http').Server(app);
-var path = require('path');
-var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
+var cookieParser = require('cookie-parser');
+var app = express();
+var path = require('path');
 var exphbs = require('express-handlebars');
 var handlebars = require('handlebars');
 var helpers = require('handlebars-form-helpers');
@@ -53,19 +48,16 @@ var LocalStrategy = require('passport-local').Strategy;
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 
-
 /*Connect to Database using Mongoose to Local Data	*/
 /****************************************************/
 mongoose.connect('mongodb://localhost:27017/data');
 var db = mongoose.connection;
 
-
-/*Load Routes                                       */
+/*Set Parsing Modules               */
 /****************************************************/
-var indexRoutes = require('./routes/indexRoutes');
-var userRoutes = require('./routes/userRoutes');
-var merchantRoutes = require('./routes/merchantRoutes');
-
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json());
+app.use(cookieParser());
 
 /*Set 'Handlebars' as Template Engine		        */
 /****************************************************/
@@ -91,14 +83,6 @@ handlebars.registerHelper("timer", function(value, options){
 	   console.log('Times up');
 	}
 });
-
-
-/*Set Parsing Modules								*/
-/****************************************************/
-app.use(bodyParser.json());
-app.use(bodyParser.urlencoded({ extended: false }));
-app.use(cookieParser());
-
 
 /*Set Folder for Static Files						*/
 /****************************************************/
@@ -156,6 +140,11 @@ app.use(function (req, res, next) {
   next();
 });
 
+/*Load Routes                                       */
+/****************************************************/
+var indexRoutes = require('./routes/indexRoutes');
+var userRoutes = require('./routes/userRoutes');
+var merchantRoutes = require('./routes/merchantRoutes');
 
 /*Set Routes							            */
 /****************************************************/
@@ -166,6 +155,6 @@ app.use('/merchant', merchantRoutes);
 
 /*Set Port								            */
 /****************************************************/
-http.listen(3000, function(){
+app.listen(3000, function(){
   console.log('Server listening on Port: 3000');
 });

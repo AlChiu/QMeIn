@@ -1,8 +1,10 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
+var ObjectId = require('mongodb').ObjectID;
 
 var Merchant = require('../models/merchant');
+var User = require('../models/user');
 
 var avgTime = 2; // MINUTES
 
@@ -26,7 +28,7 @@ router.post('/registermerchant', function(req, res){
 	var errors = req.validationErrors();
 	
 	if(errors){
-		res.render('register',{
+		res.render('registerMerchant',{
 			errors:errors
 		});
 	}
@@ -58,33 +60,9 @@ router.post('/registermerchant', function(req, res){
 					console.log(merchant);
 				});
 
-				var businessUniqueName = businessname+username;
-				businessUniqueName = businessUniqueName.replace(/\s+/g, '');
-				var QueueSchema = new mongoose.Schema({
-					firstname: {type: String},
-					lastname: {type: String},
-					email: {type: String},
-					phonenumber: {type: Number},
-					date: {type: Date, default: Date.now}
-				});
-				var BusinessCollection = mongoose.model(businessUniqueName, QueueSchema);
-				var newBusiness = new BusinessCollection({
-					firstname: firstname,
-					lastname: lastname,
-					email: username,
-					phonenumber: phonenumber,
-				});
-				// Create the collection by inserting
-				newBusiness.save(function(err){
-					if(err) throw err;
-				});
-				// Then remove the initial index so that queue is empty
-				businessUniqueName = businessUniqueName+'s';
-				var query = BusinessCollection.where();
-				query.findOneAndRemove({firstname: firstname}, function(err){
-					if(err) throw err;
-				});
-				console.log(businessUniqueName);
+				// Create the queue collection
+				mongoose.connection.db.createCollection(businessUID);
+
 				req.flash('success_msg', 'You are registered and can now login');
 				res.redirect('/login');
 			}
@@ -101,13 +79,16 @@ router.post('/registermerchant', function(req, res){
 // Merchant Delete User from queue
 router.post('/completeTransaction', function(req, res){
 	// Need to determine the businessQueue then remove queued user. 
-	var businessQueueName = req.body.businessname+req.body.email+'s';
-	businessQueueName = businessQueueNameres.replace(/\s+/g, '');
-	businessQueueName.findByIdAndRemove(req.body.id, function(err){
+	console.log(req.body.businessQueue);
+	console.log(req.body.id);
+	console.log(req.body.email);
+	mongoose.connection.db.collection(req.body.businessQueue).remove({_id:ObjectId(req.body.id)}, function(err, todo){
 		if(err) throw err;
-		console.log('User deleted!');
 	});
-	res.redirect('/merchantlanding');
+	User.findOneAndUpdate({username:req.body.email},{businessQueued: null, queued: false}, function(err){
+		if(err) throw err;
+	});
+	res.redirect('/')
 });
 
 module.exports = router;

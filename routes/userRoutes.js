@@ -1,14 +1,7 @@
 var express = require('express');
 var router = express.Router();
 var mongoose = require('mongoose');
-var QueueSchema = new mongoose.Schema({
-	firstname: {type: String},
-	lastname: {type: String},
-	email: {type: String},
-	phonenumber: {type: Number},
-	date: {type: Date, default: Date.now}
-});
-
+var ObjectId = require('mongodb').ObjectID;
 var User = require('../models/user');
 
 var avgTime = 2; // MINUTES
@@ -20,62 +13,59 @@ router.post('/addtoqueue', function(req, res){
 	var lastname = req.body.lastname;
 	var phonenumber = req.body.phonenumber;
 	var email = req.body.email;
-	var businessUniqueName = req.body.businessQueued+req.body.businessEmail+'s';
+	var businessUniqueName = req.body.businessQueued+req.body.businessEmail;
 	var queued = req.body.queued;
-
+	
 	// Need to check if the user is already queued somewhere else
-	User.findOne({username:email}, function(err, result, result2){
-		if(result.queued === false && result.businessQueued === null)
+	User.findOne({username: email}, function(err, result){
+		if(err) throw err;
+		if(result.queued === false || result.businessQueued === null)
 		{
 			businessUniqueName = businessUniqueName.replace(/\s+/g, '');
-			businessUniqueName.findOne({email:email}, function(err, result2){
+			var query = mongoose.connection.db.collection(businessUniqueName).findOne({email:email}, function(cb){
 				if(err) throw err;
-				if(!result2)
-				{
-					// Save the user into the specific queue
-					businessUniqueName.create({
-						firstname: firstname,
-						lastname: lastname,
-						email: email,
-						phonenumber: phonenumber,
-						}, function(err){
-						if(err) throw err;
-					});
-				// Update the tags in the user so that he can't queue anywhere else
-					User.findOneAndUpdate({username:email}, {queued: true, businessQueued: businessUniqueName}, function(err){
-						if(err) throw err;
-					});
-				}	
-				// User is already in this queue
-				else
-				{
-					req.flash('error_msg', 'You are already in queue!');
-					res.redirect('/queuestatus');
-				}
 			});
+			if(!query)
+			{
+				mongoose.connection.db.collection(businessUniqueName).insert({
+					firstname: firstname,
+					lastname: lastname,
+					email: email,
+					phonenumber: phonenumber,
+					date: new Date()
+				});
+				// Update the tags in the user so that he can't queue anywhere else
+				User.findOneAndUpdate({username:email}, {queued: true, businessQueued: businessUniqueName}, function(err){
+					if(err) throw err;
+				});
+				req.flash('You have queued into '+ req.body.businessQueued);
+				res.redirect('/');
+			}
+			else
+			{
+				req.flash('You are already in this queue!');
+				res.redirect('/');
+			}
 		}
-		// User is queued in a different business
+		// User is already in a queue
 		else
 		{
-			req.flash('error_msg', 'You are already in a different queue!');
-			res.redirect('/queuestatus');
-		}
+			req.flash('You are already in a queue!');
+			res.redirect('/');
+		}	
 	});
 });
 
 // Queue Out
 router.post('/queuemeout', function(req,res){
-	var email = req.body.email;
-	var businessID = req.body.business;
-
-	businessID = businessID+'s';
-	businessID = businessID.replace(/\s+/g,'');
-	
-	businessID.findOneAndRemove({email:email}, function(err){
-		if (err) throw err;
-		console.log('User Queued Out');
-		res.redirect('/');
+	mongoose.connection.db.collection(req.body.queue).remove({email: req.body.email}, function(err){
+		if(err) throw err;
 	});
+	User.findOneAndUpdate({username: req.body.email}, {businessQueued: null, queued: false}, function(err){
+		if(err) throw err;
+	});
+	req.flash('You have queued yourself out!');
+	res.redirect('/');
 });
 
 // Register User
@@ -93,7 +83,7 @@ router.post('/registeruser', function(req, res){
 	var errors = req.validationErrors();
 	
 	if(errors){
-		res.render('register',{
+		res.render('/registeruser',{
 			errors:errors
 		});
 	}
@@ -124,7 +114,7 @@ router.post('/registeruser', function(req, res){
 			{
 				console.log('Found same email already registered for another User.');
 				req.flash('error_msg', 'Cannot Register: Email already registered');
-				res.redirect('/register');
+				res.redirect('/registeruser');
 			}
 		})
 	}

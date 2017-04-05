@@ -20,9 +20,9 @@
 			<td>{{date}}</td>
 			<td>
 				<form action="/merchant/completeTransaction" method="post">
-					<input type="hidden" class="form-control" name="businessname" value="{{user.businessname}}">
-					<input type="hidden" class="form-control" name="email" value={{user.username}}>
-					<input type="hidden" name="id" type="submit" class="form-control" value={{_id}}>
+					<input type="hidden" class="form-control" name="businessQueue" value="{{@root.user.businessUniqueID}}">
+					<input type="hidden" name="id" class="form-control" value={{_id}}>
+					<input type="hidden" name="email" class="form-control" value={{email}}>
 					<button type="submit" class="btn btn-lg btn-info">Complete</button>
 				</form>
 			</td>

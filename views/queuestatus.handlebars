@@ -1,17 +1,11 @@
-<!-- Used to submit info to the queuestatus route automatically -->
-<form id="auto" method="post" action="/users/queuestatus">
-	<input type="hidden" class="form-control" name="email" value={{user.username}}>
-	<input type="hidden" class="form-control" name="business" value="{{user.businessQueued}}">
-</form>
-<!-- **************************************************-->
-
 <h3>You are in the {{merchdata.businessname}} Queue, <strong>{{ user.firstname }}</strong> <strong>{{ user.lastname }}</strong>!</h3>
-<h3>Your position in queue is {{count}}.</h3>
+<h3>There are {{count}} users in queue.</h3>
+<h3>Your position in queue is {{position}}.</h3>
 <h3>Your average wait time is {{waitTime}}.</h3>  
 <form method="post" action="/users/queuemeout">
 	<div class="form-group">
 	<input type="hidden" class="form-control" name="email" value={{user.username}}>
-	<input type="hidden" class="form-control" name="business" value="{{merchdata.businessUniqueID}}">
+	<input type="hidden" class="form-control" name="queue" value="{{merchdata.businessUniqueID}}">
 	</div>
-	<button type="submit" class="btn btn-default">QmeOut</button>
+	<button type="submit" class="btn btn-primary btn-lg">QmeOut</button>
 </form>
