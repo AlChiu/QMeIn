@@ -7,7 +7,6 @@ var User = require('../models/user');
 var avgTime = 2; // MINUTES
 
 // Add to Queue
-/* need a form to submit the business name to queue into */
 router.post('/addtoqueue', function(req, res){
 	var firstname = req.body.firstname;
 	var lastname = req.body.lastname;
@@ -21,12 +20,16 @@ router.post('/addtoqueue', function(req, res){
 		if(err) throw err;
 		if(result.queued === false || result.businessQueued === null)
 		{
+			// If the user is not queued in anywhere,
+			// then check the business queue to make sure that user is not in there
 			businessUniqueName = businessUniqueName.replace(/\s+/g, '');
 			var query = mongoose.connection.db.collection(businessUniqueName).findOne({email:email}, function(cb){
 				if(err) throw err;
 			});
 			if(!query)
 			{
+				// If the user is not in the queue, then we can add in the user into the queue.
+				// Need to use mongoose-mongodb direct access drivers to insert user into queue.
 				mongoose.connection.db.collection(businessUniqueName).insert({
 					firstname: firstname,
 					lastname: lastname,
@@ -34,22 +37,24 @@ router.post('/addtoqueue', function(req, res){
 					phonenumber: phonenumber,
 					date: new Date()
 				});
+
 				// Update the tags in the user so that he can't queue anywhere else
 				User.findOneAndUpdate({username:email}, {queued: true, businessQueued: businessUniqueName}, function(err){
 					if(err) throw err;
+					req.flash('You have queued into '+ req.body.businessQueued);
+					res.redirect('/');
 				});
-				req.flash('You have queued into '+ req.body.businessQueued);
-				res.redirect('/');
 			}
 			else
 			{
+				// User is already in the specific queue
 				req.flash('You are already in this queue!');
 				res.redirect('/');
 			}
 		}
-		// User is already in a queue
 		else
 		{
+			// User is already in a queue
 			req.flash('You are already in a queue!');
 			res.redirect('/');
 		}	
@@ -63,9 +68,10 @@ router.post('/queuemeout', function(req,res){
 	});
 	User.findOneAndUpdate({username: req.body.email}, {businessQueued: null, queued: false}, function(err){
 		if(err) throw err;
+		req.flash('You have queued yourself out!');
+		res.redirect('/');
 	});
-	req.flash('You have queued yourself out!');
-	res.redirect('/');
+
 });
 
 // Register User
@@ -116,7 +122,7 @@ router.post('/registeruser', function(req, res){
 				req.flash('error_msg', 'Cannot Register: Email already registered');
 				res.redirect('/registeruser');
 			}
-		})
+		});
 	}
 });
 

@@ -47,17 +47,40 @@ router.post('/merchantlanding', ensureAuthenticated, function(req, res){
 
 // QueueStatus
 router.post('/queuestatus', ensureAuthenticated, function(req, res){
-    Merchant.findOne({businessUniqueID: req.body.queue},function(err, merch, count){
+    // Need to find the merchant business queue, find the total number of users in queue,
+    // find the specific user, and find the specific position of that user based on his time stamp
+    // from the queue.
+    Merchant.findOne({businessUniqueID: req.body.queue}, function(err, merch){
         if(err) throw err;
-        mongoose.connection.db.collection(req.body.queue).count(function(err,count, position){
-            if(err) throw err;
-            mongoose.connection.db.collection(req.body.queue).find({_id: {$lte: ObjectId(req.body.id)}}).count(function(err, position){
+        else 
+        {
+            console.log(merch);
+            mongoose.connection.db.collection(req.body.queue).count(function(err, count){
                 if(err) throw err;
-                position += 1;
-                var waitTime = (position - 1) * avgTime;
-                res.render('queuestatus', {merchdata: merch, count: count, position: position, waitTime: waitTime});
+                else
+                {
+                    console.log(count);
+                    mongoose.connection.db.collection(req.body.queue).findOne({email: req.body.user}, function(err, date){
+                        if(err) throw err;
+                        else
+                        {
+                            var queueDate = date.date;
+                            console.log(queueDate);
+                            mongoose.connection.db.collection(req.body.queue).find({date: {$lte: queueDate}}).count(function(err, position){
+                                if(err) throw err;
+                                else
+                                {
+                                    console.log(position);
+                                    var waitTime = (position-1) * avgTime;
+                                    console.log(waitTime);
+                                    res.render('queuestatus',{merchdata: merch, count: count, position: position, waitTime: waitTime});
+                                }
+                            });
+                        }
+                    });                    
+                }
             });
-        });
+        }
     });
 });
 
