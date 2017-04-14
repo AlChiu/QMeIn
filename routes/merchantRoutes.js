@@ -5,6 +5,7 @@ var ObjectId = require('mongodb').ObjectID;
 
 var Merchant = require('../models/merchant');
 var User = require('../models/user');
+var Queue = require('../models/queue');
 
 var avgTime = 2; // MINUTES
 
@@ -60,9 +61,6 @@ router.post('/registermerchant', function(req, res){
 					console.log(merchant);
 				});
 
-				// Create the queue collection
-				mongoose.connection.db.createCollection(businessUID);
-
 				req.flash('success_msg', 'You are registered and can now login');
 				res.redirect('/login');
 			}
@@ -82,13 +80,16 @@ router.post('/completeTransaction', function(req, res){
 	console.log(req.body.businessQueue);
 	console.log(req.body.id);
 	console.log(req.body.email);
-	mongoose.connection.db.collection(req.body.businessQueue).remove({_id:ObjectId(req.body.id)}, function(err, todo){
+	Queue.findOneAndRemove({businessUniqueID: req.body.businessQueue, _id:ObjectId(req.body.id)}, function(err, todo){
 		if(err) throw err;
+		else
+		{
+			User.findOneAndUpdate({username:req.body.email},{businessQueued: null, queued: false}, function(err){
+				if(err) throw err;
+				else res.redirect('/');
+			});
+		}
 	});
-	User.findOneAndUpdate({username:req.body.email},{businessQueued: null, queued: false}, function(err){
-		if(err) throw err;
-	});
-	res.redirect('/')
 });
 
 module.exports = router;

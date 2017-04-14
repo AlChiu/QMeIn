@@ -48,6 +48,9 @@ var LocalStrategy = require('passport-local').Strategy;
 var mongo = require('mongodb');
 var mongoose = require('mongoose');
 
+'use strict';
+const nodemailer = require('nodemailer');
+
 /*Connect to Database using Mongoose to Local Data	*/
 /****************************************************/
 mongoose.connect('mongodb://localhost:27017/data');
@@ -82,6 +85,83 @@ handlebars.registerHelper("timer", function(value, options){
    function countDown(){
 	   console.log('Times up');
 	}
+});
+
+/*Reguster Handlebars Date Function               */
+/**************************************************/
+handlebars.registerHelper("formatDate", function(value, options){
+  var time = value.toLocaleTimeString();
+  return time;
+});
+
+/*Register 'Handlebars' ifvalue test function     */
+/****************************************************/
+handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options) {
+
+    var operators, result;
+    
+    if (arguments.length < 3) {
+        throw new Error("Handlerbars Helper 'compare' needs 2 parameters");
+    }
+    
+    if (options === undefined) {
+        options = rvalue;
+        rvalue = operator;
+        operator = "===";
+    }
+    
+    operators = {
+        '==': function (l, r) { return l == r; },
+        '===': function (l, r) { return l === r; },
+        '!=': function (l, r) { return l != r; },
+        '!==': function (l, r) { return l !== r; },
+        '<': function (l, r) { return l < r; },
+        '>': function (l, r) { return l > r; },
+        '<=': function (l, r) { return l <= r; },
+        '>=': function (l, r) { return l >= r; },
+        'typeof': function (l, r) { return typeof l == r; }
+    };
+    
+    if (!operators[operator]) {
+        throw new Error("Handlerbars Helper 'compare' doesn't know the operator " + operator);
+    }
+    
+    result = operators[operator](lvalue, rvalue);
+    
+    if (result) {
+        return options.fn(this);
+    } else {
+        return options.inverse(this);
+    }
+
+});
+
+/*Register 'Handlebars' sendemailsms function   */
+/****************************************************/
+handlebars.registerHelper("sendemailsms", function(value, options){
+// create reusable transporter object using the default SMTP transport
+  let transporter = nodemailer.createTransport({
+    service: 'gmail',
+    auth: {
+      user: 'qmein.application@gmail.com',
+      pass: 'House123@'
+    }
+  });
+
+  let mailOptions = {
+    from: 'QmeIn <qmein.application@gmail.com>', // sender address
+    to: '4242444187@tmomail.net', // list of receivers
+    subject: 'You are now 3rd in Queue!', // Subject line
+    text: '', // plain text body
+  };
+
+  // send mail with defined transport object
+  transporter.sendMail(mailOptions, (error, info) => {
+    if (error) {
+      return console.log(error);
+    }
+    console.log('Message %s sent: %s', info.messageId, info.response);
+  });
 });
 
 /*Set Folder for Static Files						*/

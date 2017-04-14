@@ -1,32 +1,85 @@
 {{#if user.businessname}}
-	<h3>Here is the current Queue: </h3>  
-	<table>
-	  <tr>
-		<th>Position</th>
-		<th>Last Name</th>
-		<th>First Name</th>
-		<th>Email</th>
-		<th>Phone Number</th>
-		<th>Time</th>
-		<th>Transaction Completed</th>
-	  </tr>
-		{{#each queuedata }}
-		<tr>
-			<td>{{inc @index}}</td>
-			<td>{{lastname}}</td>
-			<td>{{firstname}}</td>
-			<td>{{email}}</td>
-			<td>{{phonenumber}}</td>
-			<td>{{date}}</td>
-			<td>
-				<form action="/merchant/completeTransaction" method="post">
-					<input type="hidden" class="form-control" name="businessQueue" value="{{@root.user.businessUniqueID}}">
-					<input type="hidden" name="id" class="form-control" value={{_id}}>
-					<input type="hidden" name="email" class="form-control" value={{email}}>
-					<button type="submit" class="btn btn-lg btn-info">Complete</button>
-				</form>
-			</td>
-		</tr>
-		{{/each}}
-	</table>
+	<h3>Here is the current Queue: </h3>
+		<div class="container">
+			<div class="row">
+				<div class="panel panel-default">
+					<div class="panel-heading">
+						<h4>{{user.businessname}} Queue</h4>
+					</div>		  
+					<table class="table table-fixed">
+						<thead class="thead-inverse">
+	  						<tr>
+								<th class="col-xs-1">Position</th>
+								<th class="col-xs-2">Last Name</th>
+								<th class="col-xs-2">First Name</th>
+								<th class="col-xs-2">Email</th>
+								<th class="col-xs-2">Phone Number</th>
+								<th class="col-xs-1">Time</th>
+								<th class="col-xs-1">Timer</th>
+								<th class="col-xs-1">Complete</th>
+	  						</tr>
+  						</thead>
+						{{#each queuedata }}
+						<tbody>
+							<tr>
+								<td class="col-xs-1">{{inc @index}}</td>
+								<td class="col-xs-2">{{lastname}}</td>
+								<td class="col-xs-2">{{firstname}}</td>
+								<td class="col-xs-2">{{email}}</td>
+								<td class="col-xs-2">{{phonenumber}}</td>
+								<td class="col-xs-1">{{formatDate date}}</td>
+								{{#compare @index "==" 0}}
+    								<td class="col-xs-1">
+										<p><time>00:00:00</time></p>
+										<div id="start"></div>
+									</td>
+								{{/compare}}
+								<!--{{#compare @index "==" 2}}
+										{{sendemailsms}}
+									{{/compare}}-->
+								{{#compare @index "!=" 0}}
+    								<td class="col-xs-1">Waiting</td>
+								{{/compare}}
+								<td class="col-xs-1">
+									<form action="/merchant/completeTransaction" method="post">
+									<input type="hidden" class="form-control" name="businessQueue" value="{{@root.user.businessUniqueID}}">
+									<input type="hidden" name="id" class="form-control" value={{_id}}>
+									<input type="hidden" name="email" class="form-control" value={{email}}>
+									<button type="submit" class="btn btn-md btn-info">Complete</button>
+									</form>
+								</td>
+							</tr>
+						</tbody>
+						{{/each}}
+					</table>
+				</div>
+			</div>
+		</div>
 {{/if}}
+
+<script type="text/javascript">
+	var p = document.getElementsByTagName('p')[0],
+		start = document.getElementById('start'),
+		seconds = 0, minutes = 0, hours = 0,
+		t;
+	function add() {
+		seconds++;    
+		if (seconds >= 60) {
+			seconds = 0;
+			minutes++;
+        if (minutes >= 60) {
+            minutes = 0;
+            hours++;
+			}
+		}
+    
+    	p.textContent = (hours ? (hours > 9 ? hours : "0" + hours) : "00") + ":" + (minutes ? (minutes > 9 ? minutes : "0" + minutes) : "00") + ":" + (seconds > 9 ? seconds : "0" + seconds);
+    	timer();
+	}
+	function timer() {
+		t = setTimeout(add, 1000);
+	}
+	timer();
+	/* Start*/
+	start.onload = timer;
+</script>

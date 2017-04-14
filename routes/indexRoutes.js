@@ -7,6 +7,7 @@ var LocalStrategy = require('passport-local').Strategy;
 
 var User = require('../models/user');
 var Merchant = require('../models/merchant');
+var Queue = require('../models/queue');
 var avgTime = 2; //time in minutes
 
 /* Main function to make sure that the user is */
@@ -39,7 +40,7 @@ router.get('/userlanding', ensureAuthenticated, function(req, res){
 
 // Get the merchant landing page
 router.post('/merchantlanding', ensureAuthenticated, function(req, res){
-    mongoose.connection.db.collection(req.body.businessUID).find().toArray(function(err, doc){
+    Queue.find({businessUniqueID: req.body.businessUID}, function(err,doc){
         if(err) throw err;
         else res.render('merchantlanding', {queuedata: doc});
     });
@@ -47,37 +48,34 @@ router.post('/merchantlanding', ensureAuthenticated, function(req, res){
 
 // QueueStatus
 router.post('/queuestatus', ensureAuthenticated, function(req, res){
-    // Need to find the merchant business queue, find the total number of users in queue,
-    // find the specific user, and find the specific position of that user based on his time stamp
-    // from the queue.
     Merchant.findOne({businessUniqueID: req.body.queue}, function(err, merch){
         if(err) throw err;
         else 
         {
             console.log(merch);
-            mongoose.connection.db.collection(req.body.queue).count(function(err, count){
+            Queue.getQueueCount(req.body.queue, function(err, count){
                 if(err) throw err;
                 else
                 {
                     console.log(count);
-                    mongoose.connection.db.collection(req.body.queue).findOne({email: req.body.user}, function(err, date){
+                    Queue.findOne({businessUniqueID: req.body.queue, email: req.body.user}, function(err, date){
                         if(err) throw err;
                         else
                         {
                             var queueDate = date.date;
-                            console.log(queueDate);
-                            mongoose.connection.db.collection(req.body.queue).find({date: {$lte: queueDate}}).count(function(err, position){
+                            console.log(date);
+                            Queue.getQueuePosition(queueDate, req.body.queue, function(err, position){
                                 if(err) throw err;
                                 else
                                 {
                                     console.log(position);
                                     var waitTime = (position-1) * avgTime;
                                     console.log(waitTime);
-                                    res.render('queuestatus',{merchdata: merch, count: count, position: position, waitTime: waitTime});
+                                    res.render('queuestatus', {merchdata: merch, count: count, position: position, waitTime: waitTime});
                                 }
                             });
                         }
-                    });                    
+                    });
                 }
             });
         }
