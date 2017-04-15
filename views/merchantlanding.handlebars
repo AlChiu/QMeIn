@@ -1,21 +1,19 @@
 {{#if user.businessname}}
-	<h3>Here is the current Queue: </h3>
 		<div class="container">
 			<div class="row">
 				<div class="panel panel-default">
 					<div class="panel-heading">
-						<h4>{{user.businessname}} Queue</h4>
+						<h4>Current <strong>{{user.businessname}}</strong> Queue</h4>
 					</div>		  
 					<table class="table table-fixed">
 						<thead class="thead-inverse">
 	  						<tr>
 								<th class="col-xs-1">Position</th>
-								<th class="col-xs-2">Last Name</th>
-								<th class="col-xs-2">First Name</th>
+								<th class="col-xs-2">Name</th>
 								<th class="col-xs-2">Email</th>
 								<th class="col-xs-2">Phone Number</th>
-								<th class="col-xs-1">Time</th>
-								<th class="col-xs-1">Timer</th>
+								<th class="col-xs-2">Time</th>
+								<th class="col-xs-2">Timer</th>
 								<th class="col-xs-1">Complete</th>
 	  						</tr>
   						</thead>
@@ -23,13 +21,12 @@
 						<tbody>
 							<tr>
 								<td class="col-xs-1">{{inc @index}}</td>
-								<td class="col-xs-2">{{lastname}}</td>
-								<td class="col-xs-2">{{firstname}}</td>
+								<td class="col-xs-2">{{firstname}} {{lastname}}</td>
 								<td class="col-xs-2">{{email}}</td>
 								<td class="col-xs-2">{{phonenumber}}</td>
-								<td class="col-xs-1">{{formatDate date}}</td>
+								<td class="col-xs-2">{{formatDate date}}</td>
 								{{#compare @index "==" 0}}
-    								<td class="col-xs-1">
+    								<td class="col-xs-2">
 										<p><time>00:00:00</time></p>
 										<div id="start"></div>
 									</td>

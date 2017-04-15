@@ -1,86 +1,71 @@
     <div class="container">
-
-        <!-- Heading Row -->
-        <div class="row">
-            <div class="col-md-8">
-                <img class="img-responsive img-rounded" src="/images/logo.png">
-            </div>
-            <!-- /.col-md-8 -->
-            <div class="col-md-4">
-                <h1>QMeIn</h1>
-                <p>Something Something Description!</p>
-                <a class="btn btn-primary btn-lg" href="#">About page?</a>
-            </div>
-            <!-- /.col-md-4 -->
-        </div>
-        <!-- /.row -->
-
-        <hr>
-
-        <!-- Call to Action Well -->
-        <div class="row">
-            <div class="col-lg-12">
-                <div class="well text-center">
-                    This is a well that is a great spot for a business tagline or phone number for easy access!
-                </div>
-            </div>
-            <!-- /.col-lg-12 -->
-        </div>
-        <!-- /.row -->
-
         <!-- Content Row -->
         <div class="row">
             <!-- Default when no user is logged in -->
             {{#unless user.username}}
-            <div class="col-md-4">
-                <h2>Login</h2>
-                <p>If you are already an active user, just click the button below to login</p>
-                <a class="btn btn-primary btn-lg" href="login">Login</a>
+            <div class="col-xs-4">
+                <div class="well text-center">
+                    <h2>Login</h2>
+                    <p>If you are already an active user, just click the button below to login</p>
+                    <a class="btn btn-primary btn-lg" href="login">Login</a>
+                </div>
             </div>
             <!-- /.col-md-4 -->
-            <div class="col-md-4">
-                <h2>New User</h2>
-                <p>New to QMeIn? Want to start lining up without lining up? Register as a new user! You are only a click away!</p>
-                <a class="btn btn-primary btn-lg" href="registerUser">New User</a>
+            <div class="col-xs-4">
+                <div class="well text-center">
+                    <h2>New User</h2>
+                    <p>New to QMeIn? Want to start lining up without lining up? Register as a new user! You are only a click away!</p>
+                    <a class="btn btn-primary btn-lg" href="registerUser">New User</a>
+                </div>
             </div>
             <!-- /.col-md-4 -->
-            <div class="col-md-4">
-                <h2>New Merchant</h2>
-                <p>Want to start improving your business? Want to start relieving headaches for everyone? Register as a new merchant! Start working with us today!</p>
-                <a class="btn btn-primary btn-lg" href="registerMerchant">New Merchant</a>
+            <div class="col-xs-4">
+                <div class="well text-center">
+                    <h2>New Merchant</h2>
+                    <p>Want to start improving your business? Want to start relieving headaches for everyone? Register as a new merchant! Start working with us today!</p>
+                    <a class="btn btn-primary btn-lg" href="registerMerchant">New Merchant</a>
+                </div>
             </div>
             {{/unless}}
             <!-- If a normal user logs in -->
             {{#if user.username}}
                 {{#unless user.businessname}}
                     {{#if user.queued}}
-                        <div class="col-lg-12">
-                            <h2>You are in a queue!</h2>
-                            <p>Need to check your status in the queue? Click below.</p>
-                            <form method="post" action="/queuestatus">
-                                <input type="hidden" name="queue" value={{user.businessQueued}}>
-                                <input type="hidden" name="user" value={{user.username}}>
-                                <input type="hidden" name="id" value={{user._id}}>
-                                <button type="submit" class="btn btn-primary btn-lg">Check Status</button>
-                            </form>
+                        <div class="col-xs-12">
+                            <div class="well">
+                                <h2>Hello, <strong>{{user.firstname}} {{user.lastname}}</strong>!</h2>
+                                <h3>You are in a queue!</h3>
+                                <p>Need to check your status in the queue? Click below.</p>
+                                <form method="post" action="/queuestatus">
+                                    <input type="hidden" name="queue" value={{user.businessQueued}}>
+                                    <input type="hidden" name="user" value={{user.username}}>
+                                    <input type="hidden" name="id" value={{user._id}}>
+                                    <button type="submit" class="btn btn-primary btn-lg">Check Status</button>
+                                </form>
+                            </div>
                         </div>
                     {{else}}
-                        <div class="col-lg-12">
-                            <h2>Start Queuing Up!</h2>
-                            <p>What are you waiting for? Check out the merchant list and start queuing up.</p>
-                            <a class="btn btn-primary btn-lg" href="userlanding">Merchant List</a>
+                        <div class="col-xs-12">
+                            <div class="well">
+                                <h2>Hello, <strong>{{user.firstname}} {{user.lastname}}</strong>!</h2>
+                                <h3>Start Queuing Up!</h3>
+                                <p>What are you waiting for? Check out the merchant list and start queuing up.</p>
+                                <a class="btn btn-primary btn-lg" href="userlanding">Merchant List</a>
+                            </div>
                         </div>
                     {{/if}}
                 {{/unless}}
             {{/if}}
             {{#if user.businessname}}
-            <div class="col-lg-12">
-                <h2>Monitor Your Queue!</h2>
-                <p>Start using the queue to speed up customer transactions and optimize your business!</p>
-                <form method="post" action="/merchantlanding">
-                    <input type="hidden" name="businessUID" value={{user.businessUniqueID}}>
-                    <button type="submit" class="btn btn-primary btn-lg">Current Queue</button>
-                </form>
+            <div class="col-xs-12">
+                <div class="well">
+                    <h2>Monitor Your Queue!</h2>
+                    <p>Start using the queue to speed up customer transactions and optimize your business!</p>
+                    <form method="post" action="/merchantlanding">
+                        <input type="hidden" name="businessUID" value={{user.businessUniqueID}}>
+                        <button type="submit" class="btn btn-primary btn-lg">Current Queue</button>
+                    </form>
+                </div>
             </div>
             {{/if}}
         </div>
