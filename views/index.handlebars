@@ -1,28 +1,28 @@
-    <div class="container">
+    <div class="container-fluid">
         <!-- Content Row -->
         <div class="row">
             <!-- Default when no user is logged in -->
             {{#unless user.username}}
-            <div class="col-xs-4">
+            <div class="col-lg-4">
                 <div class="well text-center">
-                    <h2>Login</h2>
-                    <p>If you are already an active user, just click the button below to login</p>
+                    <h2>Login</h2><br>
+                    <p>If you are already an active user, just click the button below to login</p><br><br><br>
                     <a class="btn btn-primary btn-lg" href="login">Login</a>
                 </div>
             </div>
             <!-- /.col-md-4 -->
-            <div class="col-xs-4">
+            <div class="col-lg-4">
                 <div class="well text-center">
-                    <h2>New User</h2>
-                    <p>New to QMeIn? Want to start lining up without lining up? Register as a new user! You are only a click away!</p>
+                    <h2>New User</h2><br>
+                    <p>New to QMeIn? Want to start lining up without lining up? Register as a new user! You are only a click away!</p><br>
                     <a class="btn btn-primary btn-lg" href="registerUser">New User</a>
                 </div>
             </div>
             <!-- /.col-md-4 -->
-            <div class="col-xs-4">
+            <div class="col-lg-4">
                 <div class="well text-center">
                     <h2>New Merchant</h2>
-                    <p>Want to start improving your business? Want to start relieving headaches for everyone? Register as a new merchant! Start working with us today!</p>
+                    <p>Want to start improving your business? Register as a new merchant! Start working with us today!</p><br>
                     <a class="btn btn-primary btn-lg" href="registerMerchant">New Merchant</a>
                 </div>
             </div>
@@ -31,12 +31,12 @@
             {{#if user.username}}
                 {{#unless user.businessname}}
                     {{#if user.queued}}
-                        <div class="col-xs-12">
+                        <div class="col-sm-12">
                             <div class="well">
                                 <h2>Hello, <strong>{{user.firstname}} {{user.lastname}}</strong>!</h2>
                                 <h3>You are in a queue!</h3>
                                 <p>Need to check your status in the queue? Click below.</p>
-                                <form method="post" action="/queuestatus">
+                                <form method="post" action="/yourstatus">
                                     <input type="hidden" name="queue" value={{user.businessQueued}}>
                                     <input type="hidden" name="user" value={{user.username}}>
                                     <input type="hidden" name="id" value={{user._id}}>
@@ -45,19 +45,19 @@
                             </div>
                         </div>
                     {{else}}
-                        <div class="col-xs-12">
+                        <div class="col-sm-12">
                             <div class="well">
                                 <h2>Hello, <strong>{{user.firstname}} {{user.lastname}}</strong>!</h2>
                                 <h3>Start Queuing Up!</h3>
                                 <p>What are you waiting for? Check out the merchant list and start queuing up.</p>
-                                <a class="btn btn-primary btn-lg" href="userlanding">Merchant List</a>
+                                <a class="btn btn-primary btn-lg" href="userlanding">Queue Up</a>
                             </div>
                         </div>
                     {{/if}}
                 {{/unless}}
             {{/if}}
             {{#if user.businessname}}
-            <div class="col-xs-12">
+            <div class="col-sm-12">
                 <div class="well">
                     <h2>Monitor Your Queue!</h2>
                     <p>Start using the queue to speed up customer transactions and optimize your business!</p>

@@ -62,6 +62,7 @@
 </head>
 
 <body>
+
   <div id="myCarousel" class="carousel slide" data-ride="carousel">
     <div class="carousel-inner">
       <div class="active item one"></div>
@@ -96,32 +97,36 @@
     </div>
   </nav>
 
-    <div class="boxshadow">
-      <div class="center">
-        <div class="container-fluid text-center">
-          <img src="/images/logo.png" id=logo style="padding: 10px;width: 150px;">
-        </div>
-        
-        <div class="container-fluid text-center">  
-          {{#if success_msg}}
-            <div class="alert alert-success">{{success_msg}}</div>
-          {{/if}}
+  <div class="boxshadow">
+      <div class="container-fluid text-center">
+          <img src="/images/logo.png" id=logo style="padding: 10px; width: 150px;">
+      </div>
 
-          {{#if error_msg}}
-            <div class="alert alert-danger">{{error_msg}}</div>
-          {{/if}}
+      <div class="container-fluid text-center">
+        <div class="row">
+          <div class="col-lg-12">  
+            {{#if success_msg}}
+              <div class="alert alert-success">{{success_msg}}</div>
+            {{/if}}
 
-          {{#if error}}
-            <div class="alert alert-danger">{{error}}</div>
-          {{/if}}
-          {{{body}}}
+            {{#if error_msg}}
+              <div class="alert alert-danger">{{error_msg}}</div>
+            {{/if}}
+
+            {{#if error}}
+              <div class="alert alert-danger">{{error}}</div>
+            {{/if}}
+          </div>
         </div>
       </div>
+
+      {{{body}}}
 
       <footer class="container-fluid text-center">
         <p>&copy; QmeIn, Inc.</p>
       </footer>
-    </div>
-</body>
 
+  </div>
+
+</body>
 </html>

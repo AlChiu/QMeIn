@@ -1,41 +1,29 @@
- {{#unless user.businessname}}
-<div class="container">
+{{#unless user.businessname}}
+<div class="container-fluid">
 	<div class="row">
-		<div class="panel panel-default">
+		<div class="panel panel-default" style="text-align: center;">
 			<div class="panel-heading">
 				<h4>Merchant Listing</h4>
 			</div>
-			<table class="table table-fixed">
-				<thead class="thead-inverse">
-					<tr>
-						<th class="col-xs-2">Name</th>
-						<th class="col-xs-8">Address</th>
-						<th class="col-xs-2">Queue</th>
-					</tr>
-				</thead>
-				{{#each merchdata}}
-				<tbody>
-					<tr>
-						<td class="col-xs-2">{{businessname}}</td>
-						<td class="col-xs-8">{{businessAddress}}<br>{{businessCity}}, {{businessState}} {{businessZip}}</td>
-						<td class="col-xs-2" style="text-align: center">
-							<!-- QueMeIn button -->
-							<form method="post" action="/users/addtoqueue">
-	 							<div class="form-group">
-									<input type="hidden" class="form-control" name="firstname" value={{@root.user.firstname}}>
-									<input type="hidden" class="form-control" name="lastname" value={{@root.user.lastname}}>
-									<input type="hidden" class="form-control" name="email" value={{@root.user.username}}>
-									<input type="hidden" class="form-control" name="phonenumber" value={{@root.user.phonenumber}}>
-									<input type="hidden" class="form-control" name="businessQueued" value={{businessUniqueID}}>
-									<input type="hidden" class="form-control" name="queued" value="true">
-	  							</div>
-	  							<button type="submit" class="btn btn-lg btn-info">QmeIn</button>
-							</form>
-						</td>
-					</tr>
-				</tbody>
-				{{/each}}
-			</table>
+			<form method="post" action="/users/addtoqueue">
+				<div class="qform">
+					<h4>Queues Available:<p><br></p>
+						<select class="selectpicker2" data-style="btn-primary" name="businessQueued">
+							{{#each merchdata}}
+								<option value={{businessUniqueID}}>{{businessname}}</option>
+							{{/each}}
+						</select>
+					</h4>
+					<input type="hidden" class="form-control" name="firstname" value={{@root.user.firstname}}>
+					<input type="hidden" class="form-control" name="lastname" value={{@root.user.lastname}}>
+					<input type="hidden" class="form-control" name="email" value={{@root.user.username}}>
+					<input type="hidden" class="form-control" name="phonenumber" value={{@root.user.phonenumber}}>
+					<input type="hidden" class="form-control" name="queued" value="true">
+				</div><br>
+				<button type="submit" class="btn btn-lg btn-primary" name="statusButton" value="queueIn">Queue In</button>
+				<br><br>
+				<button type="submit" class="btn btn-lg btn-info" name="statusButton" value="checkLine">Queue Status</button>
+			</form>
 		</div>
 	</div>
 </div>

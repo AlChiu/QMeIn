@@ -138,7 +138,7 @@ handlebars.registerHelper('compare', function (lvalue, operator, rvalue, options
 
 /*Register 'Handlebars' sendemailsms function   */
 /****************************************************/
-handlebars.registerHelper("sendemailsms", function(value, options){
+/*handlebars.registerHelper("sendemailsms", function(value, options){
 // create reusable transporter object using the default SMTP transport
   let transporter = nodemailer.createTransport({
     service: 'gmail',
@@ -162,7 +162,7 @@ handlebars.registerHelper("sendemailsms", function(value, options){
     }
     console.log('Message %s sent: %s', info.messageId, info.response);
   });
-});
+});*/
 
 /*Set Folder for Static Files						*/
 /****************************************************/

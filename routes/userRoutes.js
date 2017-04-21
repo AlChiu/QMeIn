@@ -4,13 +4,33 @@ var mongoose = require('mongoose');
 var ObjectId = require('mongodb').ObjectID;
 var User = require('../models/user');
 var Queue = require('../models/queue');
+var Merchant = require('../models/merchant');
 
 var avgTime = 2; // MINUTES
 
 // Add to Queue
 router.post('/addtoqueue', function(req, res){
 	// Need to check if the user is already queued somewhere else
-	User.findOne({username: req.body.email}, function(err, result){
+	if(req.body.statusButton === 'checkLine')
+	{
+		Merchant.findOne({businessUniqueID: req.body.businessQueued}, function(err, merchdata){
+			if(err) throw err;
+			else
+			{
+				Queue.count({businessUniqueID: req.body.businessQueued}, function(err, count){
+					if(err) throw err;
+					else
+					{
+						var waitTime = count * avgTime;
+						res.render('queuestatus', {count: count, merchdata: merchdata, waitTime: waitTime});
+					} 
+				});
+			}			
+		});
+	}
+	else if(req.body.statusButton === 'queueIn')
+	{
+		User.findOne({username: req.body.email}, function(err, result){
 		if(err) throw err;
 		if(result.queued === false && result.businessQueued === null)
 		{
@@ -34,7 +54,7 @@ router.post('/addtoqueue', function(req, res){
 							if(err) throw err;
 						});
 
-				// Update the tags in the user so that he can't queue anywhere else
+						// Update the tags in the user so that he can't queue anywhere else
 						User.findOneAndUpdate({username:req.body.email}, {queued: true, businessQueued: req.body.businessQueued}, function(err){
 							if(err) throw err;
 							else{
@@ -59,7 +79,8 @@ router.post('/addtoqueue', function(req, res){
 			req.flash('You are already in a queue!');
 			res.redirect('/');
 		}	
-	});
+		});
+	}
 });
 
 // Queue Out

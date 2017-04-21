@@ -46,8 +46,8 @@ router.post('/merchantlanding', ensureAuthenticated, function(req, res){
     });
 });
 
-// QueueStatus
-router.post('/queuestatus', ensureAuthenticated, function(req, res){
+// Your Current Status
+router.post('/yourstatus', ensureAuthenticated, function(req, res){
     Merchant.findOne({businessUniqueID: req.body.queue}, function(err, merch){
         if(err) throw err;
         else 
@@ -71,7 +71,7 @@ router.post('/queuestatus', ensureAuthenticated, function(req, res){
                                     console.log(position);
                                     var waitTime = (position-1) * avgTime;
                                     console.log(waitTime);
-                                    res.render('queuestatus', {merchdata: merch, count: count, position: position, waitTime: waitTime});
+                                    res.render('yourstatus', {merchdata: merch, count: count, position: position, waitTime: waitTime});
                                 }
                             });
                         }
@@ -150,9 +150,9 @@ passport.deserializeUser(function(id, done) {
             User.getUserById(id, function(err, user){
                 if(err) done(err);
                 done(null, user);
-            })
+            });
         }
-    })
+    });
 });
 
 router.post('/loginuser',

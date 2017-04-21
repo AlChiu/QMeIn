@@ -1,24 +1,12 @@
-<div class="container">
+<div class="container-fluid">
 	<div class="row">
 		<div class="panel panel-default">
 			<div class="panel-heading">
-				<h3>Hello, <strong>{{user.firstname}}</strong> <strong>{{user.lastname}}</strong>!</h3>
-				<h3>You are in the <strong>{{merchdata.businessname}}</strong> Queue.</h3>
+				<h3><strong>{{merchdata.businessname}}</strong> Queue Status</h3>
 			</div>
 			<div class="panel-body">
-				<p>There is/are <strong>{{count}}</strong> user(s) in queue.</p>
-				<p>Your position in queue is <strong>{{position}}</strong>.</p>
-				<p>With an average transaction time of <strong>2</strong> minutes,
-				your average wait time is <strong>{{waitTime}}</strong> minutes.</p>
-			</div>
-			<div class="panel-footer">  
-				<form method="post" action="/users/queuemeout">
-					<div class="form-group">
-					<input type="hidden" class="form-control" name="email" value={{user.username}}>
-					<input type="hidden" class="form-control" name="queue" value="{{merchdata.businessUniqueID}}">
-					</div>
-					<button type="submit" class="btn btn-primary btn-lg">QmeOut</button>
-				</form>
+				<p>There is currently <strong>{{count}}</strong> in the queue right now.</p>
+				<p>If you were to queue in now, your average wait time would be <strong>{{waitTime}}</strong> minutes based on an average wait time of <strong>2</strong> minutes.</p>
 			</div>
 		</div>
 	</div>

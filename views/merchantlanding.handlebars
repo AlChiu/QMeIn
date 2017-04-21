@@ -1,32 +1,33 @@
 {{#if user.businessname}}
-		<div class="container">
-			<div class="row">
-				<div class="panel panel-default">
-					<div class="panel-heading">
-						<h4>Current <strong>{{user.businessname}}</strong> Queue</h4>
-					</div>		  
+	<div class="container-fluid">
+		<div class="row">
+			<div class="panel panel-default">
+				<div class="panel-heading">
+					<h4>Current <strong>{{user.businessname}}</strong> Queue</h4>
+				</div>
+				<div class="container">		  
 					<table class="table table-fixed">
-						<thead class="thead-inverse">
+						<thead>
 	  						<tr>
-								<th class="col-xs-1">Position</th>
+								<th class="col-xs-1">#</th>
 								<th class="col-xs-2">Name</th>
-								<th class="col-xs-2">Email</th>
-								<th class="col-xs-2">Phone Number</th>
-								<th class="col-xs-2">Time</th>
-								<th class="col-xs-2">Timer</th>
-								<th class="col-xs-1">Complete</th>
+								<th class="col-xs-3">Email</th>
+								<th class="col-xs-2">Tel #</th>
+								<th class="col-xs-1">Time</th>
+								<th class="col-xs-1">Timer</th>
+								<th class="col-xs-2">Complete</th>
 	  						</tr>
-  						</thead>
-						{{#each queuedata }}
+						</thead>
 						<tbody>
+							{{#each queuedata }}
 							<tr>
 								<td class="col-xs-1">{{inc @index}}</td>
 								<td class="col-xs-2">{{firstname}} {{lastname}}</td>
-								<td class="col-xs-2">{{email}}</td>
+								<td class="col-xs-3">{{email}}</td>
 								<td class="col-xs-2">{{phonenumber}}</td>
-								<td class="col-xs-2">{{formatDate date}}</td>
+								<td class="col-xs-1">{{formatDate date}}</td>
 								{{#compare @index "==" 0}}
-    								<td class="col-xs-2">
+									<td class="col-xs-1">
 										<p><time>00:00:00</time></p>
 										<div id="start"></div>
 									</td>
@@ -35,9 +36,9 @@
 										{{sendemailsms}}
 									{{/compare}}-->
 								{{#compare @index "!=" 0}}
-    								<td class="col-xs-1">Waiting</td>
+									<td class="col-xs-1">Waiting</td>
 								{{/compare}}
-								<td class="col-xs-1">
+								<td class="col-xs-2">
 									<form action="/merchant/completeTransaction" method="post">
 									<input type="hidden" class="form-control" name="businessQueue" value="{{@root.user.businessUniqueID}}">
 									<input type="hidden" name="id" class="form-control" value={{_id}}>
@@ -46,12 +47,13 @@
 									</form>
 								</td>
 							</tr>
+							{{/each}}
 						</tbody>
-						{{/each}}
 					</table>
 				</div>
 			</div>
 		</div>
+	</div>
 {{/if}}
 
 <script type="text/javascript">
